@@ -11,7 +11,7 @@ export default {
   theme: {
   	extend: {
   		container: {
-  			center: 'true',
+  			center: true,
   			padding: '1.5rem',
   			screens: {
   				sm: '100%',
@@ -21,10 +21,7 @@ export default {
   				'2xl': '1360px'
   			}
   		},
-  		fontFamily: {
-  			sans: ["var(--font-geist-sans)", ...fontFamily.sans],
-  			mono: ["var(--font-geist-mono)", ...fontFamily.mono]
-  		},
+  		
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
