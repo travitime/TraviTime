@@ -27,11 +27,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased test`}
-        >
-          {children}
-        </body>
+        <body className={`font-inter antialiased test`}>{children}</body>
       </html>
     </ClerkProvider>
   );

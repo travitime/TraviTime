@@ -10,6 +10,9 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["Inter", "sans-serif"], // Set Inter as default
+      },
       fontSize: {
         "3xl": "24px",
         "2xl": "22px",
