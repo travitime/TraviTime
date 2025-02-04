@@ -1,10 +1,10 @@
 import Image from 'next/image';
 
-const BrandLogo: React.FC = () => {
+const BrandLogo = ({src}:{src:string} ) => {
     return (
         <div className="flex items-center justify-center">
             <Image
-                src="/app-assets/brand-logo.png"
+                src={src}
                 alt="Brand Logo"
                 width={111}
                 height={24}

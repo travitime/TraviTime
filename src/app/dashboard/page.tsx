@@ -5,7 +5,7 @@ import RecentsBlock from './_components/recents-block/RecentsBlock';
 import QuickActions from './_components/quick-actions/QuickActions';
 import UsefulLinks from './_components/useful-links/UsefulLinks';
 
-export default function DashboardPageage() {
+export default function DashboardPage() {
   return (
     <div className='w-full "'>
       <GetStarted />

@@ -5,13 +5,10 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils'; // Utility function for class merging (optional)
 
 const navItems = [
-  { name: 'Dashboard', href: '/' },
-  { name: 'Customers', href: '/Customers' },
-  { name: 'Itineraries', href: '/Itineraries' },
-  { name: 'Quotes', href: '/Quotes' },
-  { name: 'Payments', href: '/Payments' },
-  { name: 'Documents', href: '/Documents' },
-  { name: 'Communication hub', href: '/Communication_hub' },
+  { name: 'Product', href: '/' },
+  { name: 'Solutions', href: '/about' },
+  { name: 'About us', href: '/services' },
+  { name: 'Contact', href: '/contact' },
 ];
 
 export default function NavBar() {
@@ -24,7 +21,7 @@ export default function NavBar() {
               <Link
                 href={item.href}
                 className={cn(
-                  'px-4 py-2 rounded-md text-white hover:bg-gray-100 transition'
+                  'px-4 py-2 rounded-md text-gray-500 hover:bg-gray-100 transition'
                 )}
               >
                 {item.name}
