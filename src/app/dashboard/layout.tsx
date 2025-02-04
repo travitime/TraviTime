@@ -1,6 +1,5 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import React from "react";
-import { LeftNavigation } from "./_components/LeftNavigation";
 import { Metadata } from "next";
 import FullWidthLayout from "@/components/layouts/FullWidthLayout";
 

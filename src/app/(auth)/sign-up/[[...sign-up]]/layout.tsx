@@ -14,13 +14,12 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    // <ClerkProvider>
-
-    <FullWidthLayoutSite>
-      {/* <LeftNavigation> */}
-      {children}
-      {/* </LeftNavigation> */}
-    </FullWidthLayoutSite>
-    // </ClerkProvider>
+    <ClerkProvider>
+      <FullWidthLayoutSite>
+        {/* <LeftNavigation> */}
+        {children}
+        {/* </LeftNavigation> */}
+      </FullWidthLayoutSite>
+    </ClerkProvider>
   );
 }

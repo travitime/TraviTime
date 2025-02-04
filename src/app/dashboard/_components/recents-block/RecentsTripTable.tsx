@@ -1,6 +1,4 @@
 import React from "react";
-import Image from "next/image";
-import { Ellipsis } from "lucide-react";
 import Card from "../Card";
 
 import {
@@ -11,7 +9,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
 export default function RecentsTripTable() {
   const trips = [
     {
@@ -51,13 +48,12 @@ export default function RecentsTripTable() {
     },
   ];
 
-  const statusStyles: any = {
-    Planning: "bg-yellow-100 text-yellow-700",
-    Completed: "bg-green-100 text-green-700",
-    Cancelled: "bg-red-100 text-red-700",
-    Scheduled: "bg-purple-100 text-purple-700",
-  };
-
+  // const statusStyles = {
+  //   Planning: "bg-yellow-100 text-yellow-700",
+  //   Completed: "bg-green-100 text-green-700",
+  //   Cancelled: "bg-red-100 text-red-700",
+  //   Scheduled: "bg-purple-100 text-purple-700",
+  // };
   return (
     <Card className="px-4">
       <Table>
@@ -80,7 +76,8 @@ export default function RecentsTripTable() {
               <TableCell>
                 <span
                   className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    statusStyles[trip.status]
+                    // statusStyles[trip.status]
+                    "s"
                   }`}
                 >
                   {trip.status}

@@ -91,7 +91,7 @@ export default function RecentsCommunication() {
         <Ellipsis size={16} />
       </div>
       {/* <EmptyState /> */}
-      <Communications />
+      {true ? <Communications /> : <EmptyState />}
     </Card>
   );
 }

@@ -36,7 +36,7 @@ export default function RecentsTrip() {
         <h2 className="text-lg font-semibold">Recent Trips</h2>
         <Ellipsis size={16} />
       </div>
-      <RecentsTripTable />
+      {true ? <RecentsTripTable /> : <EmptyState />}
     </Card>
   );
 }

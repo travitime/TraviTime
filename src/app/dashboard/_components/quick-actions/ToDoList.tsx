@@ -29,7 +29,6 @@ const tasks = [
 ];
 
 export default function TodoList() {
-  const completedCount = tasks.filter((task) => task.completed).length;
   return (
     <Card className="">
       <ul>
