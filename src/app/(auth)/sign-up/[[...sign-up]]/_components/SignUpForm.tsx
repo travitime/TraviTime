@@ -2,7 +2,12 @@ import * as Form from "@radix-ui/react-form";
 import { Input } from "@/components/ui/input";
 import { Facebook, Twitter, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 export default function SignUpForm() {
+  const router = useRouter();
+  const handleSignUpClick = () => {
+    router.push("/dashboard");
+  };
   return (
     <div className="max-w-md mx-auto ">
       <h2 className="text-2xl font-bold mb-4">Sign up with</h2>
@@ -45,7 +50,7 @@ export default function SignUpForm() {
         </Form.Field>
 
         <Form.Submit asChild>
-          <Button>Create your account</Button>
+          <Button onClick={handleSignUpClick}>Create your account</Button>
         </Form.Submit>
       </Form.Root>
 
