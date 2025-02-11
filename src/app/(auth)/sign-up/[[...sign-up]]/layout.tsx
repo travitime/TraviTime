@@ -1,7 +1,7 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import React from "react";
 import { Metadata } from "next";
-import FullWidthLayout from "@/components/layouts/FullWidthLayout";
+import FullWidthLayoutSite from "@/components/layouts/FullWidthLayoutSite";
 
 export const metadata: Metadata = {
   title: "TraviTime",
@@ -15,11 +15,11 @@ export default function DashboardLayout({
 }) {
   return (
     <ClerkProvider>
-      <FullWidthLayout>
+      <FullWidthLayoutSite>
         {/* <LeftNavigation> */}
         {children}
         {/* </LeftNavigation> */}
-      </FullWidthLayout>
+      </FullWidthLayoutSite>
     </ClerkProvider>
   );
 }
