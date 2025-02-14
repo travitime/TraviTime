@@ -1,4 +1,4 @@
-// This is your Prisma schema file
+// prisma/schema.prisma
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -8,41 +8,185 @@ generator client {
   provider = "prisma-client-js"
 }
 
-enum AccountType {
-  FREE
-  PREMIUM
-  BUSINESS
-}
-
-enum Role {
+enum UserRole {
+  ADMIN
   AGENT
   CUSTOMER
 }
 
+enum SubscriptionTier {
+  BASIC
+  PREMIUM
+  ENTERPRISE
+}
 
+enum Status {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ActivityType {
+  FLIGHT
+  HOTEL
+  RESTAURANT
+  TOUR
+  TRANSPORT
+  CUSTOM
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  REFUNDED
+}
+
+enum PreferenceCategory {
+  TRAVEL_STYLE
+  BUDGET
+  ACCOMMODATION
+  ACTIVITIES
+  ACCESSIBILITY
+}
+
+enum AuthProvider {
+  CLERK
+  GOOGLE
+  CUSTOM
+}
 
 model User {
-  id          String       @id @default(uuid())
-  email       String       @unique
-  name        String?
-  accountType AccountType  @default(FREE)
-  clerkId     String       @unique
-  preferences UserPreference?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id            String    @id @default(uuid())
+  email         String    @unique
+  name          String?
+  role          UserRole  @default(CUSTOMER)
+  authProvider  AuthProvider @default(CLERK)
+  providerId    String    @unique // stores clerkId or other provider IDs
+  organization  Organization? @relation(fields: [orgId], references: [id])
+  orgId         String?
+
+  // Agent-Customer Relationship
+  agent         User?     @relation("AgentToCustomer", fields: [agentId], references: [id])
+  agentId       String?
+  customers     User[]    @relation("AgentToCustomer")
+
+  // Relations
+  itinerariesCreated Itinerary[] @relation("CreatedItineraries")
+  itinerariesAssigned Itinerary[] @relation("AssignedItineraries")
+  bookings      Booking[]
+  preferences   Preference[]
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
   @@map("users")
 }
 
-model UserPreference {
-  id              String    @id @default(uuid())
-  userId          String    @unique
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  theme           String    @default("light")
-  emailNotifications Boolean @default(true)
-  pushNotifications Boolean @default(true)
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+model Organization {
+  id              String           @id @default(uuid())
+  name            String
+  type            String          // TRAVEL_AGENCY, CORPORATE, INDIVIDUAL
+  users           User[]
+  subscriptionTier SubscriptionTier @default(BASIC)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
 
-  @@map("user_preferences")
+  @@map("organizations")
+}
+
+model Itinerary {
+  id            String    @id @default(uuid())
+  title         String
+  startDate     DateTime
+  endDate       DateTime
+  status        Status    @default(DRAFT)
+  
+  // Creator and assignee
+  creator       User      @relation("CreatedItineraries", fields: [creatorId], references: [id])
+  creatorId     String
+  assignedTo    User      @relation("AssignedItineraries", fields: [assignedToId], references: [id])
+  assignedToId  String
+
+  // Relations
+  destinations  Destination[]
+  activities    Activity[]
+  bookings      Booking[]
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("itineraries")
+}
+
+model Destination {
+  id            String    @id @default(uuid())
+  name          String
+  country       String
+  coordinates   Json?     // { latitude: number, longitude: number }
+  
+  // Relations
+  itineraries   Itinerary[]
+  activities    Activity[]
+
+  @@map("destinations")
+}
+
+model Activity {
+  id            String    @id @default(uuid())
+  title         String
+  description   String?
+  type          ActivityType
+  price         Decimal?
+  startTime     DateTime
+  endTime       DateTime
+
+  // Relations
+  destination   Destination @relation(fields: [destId], references: [id])
+  destId        String
+  itinerary     Itinerary   @relation(fields: [itineraryId], references: [id])
+  itineraryId   String
+  booking       Booking?
+
+  @@map("activities")
+}
+
+model Booking {
+  id            String    @id @default(uuid())
+  status        BookingStatus @default(PENDING)
+  price         Decimal
+  paymentStatus PaymentStatus @default(UNPAID)
+
+  // Relations
+  user          User      @relation(fields: [userId], references: [id])
+  userId        String
+  itinerary     Itinerary @relation(fields: [itineraryId], references: [id])
+  itineraryId   String
+  activity      Activity? @relation(fields: [activityId], references: [id])
+  activityId    String?   @unique
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("bookings")
+}
+
+model Preference {
+  id            String    @id @default(uuid())
+  category      PreferenceCategory
+  value         Json      // Flexible storage for different preference types
+
+  // Relations
+  user          User      @relation(fields: [userId], references: [id])
+  userId        String
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("preferences")
 }
