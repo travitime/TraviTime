@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+// import TawkMessengerReact from "@tawk.to/tawk-messenger-react";
 
 // const geistSans = localFont({
 //   src: "./fonts/GeistVF.woff",
@@ -27,6 +28,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={`font-inter antialiased test`}>{children}</body>
+        {/* <TawkMessengerReact propertyId="property_id" widgetId="default" /> */}
       </html>
     </ClerkProvider>
   );

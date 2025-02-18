@@ -5,9 +5,9 @@ import Link from "next/link";
 import { cn } from "@/lib/utils"; // Utility function for class merging (optional)
 
 const navItems = [
-  { name: "Dashboard", href: "/" },
+  { name: "Dashboard", href: "/dashboard" },
   { name: "Customers", href: "/Customers" },
-  { name: "Itineraries", href: "/Itineraries" },
+  { name: "Itineraries", href: "/itinerary/list" },
   { name: "Quotes", href: "/Quotes" },
   { name: "Payments", href: "/Payments" },
   { name: "Documents", href: "/Documents" },
