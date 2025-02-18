@@ -2,7 +2,6 @@
 import React from "react";
 import TableItineraryList from "../_components/itinerary-list/TableItineraryList";
 import Card from "../../dashboard/_components/Card";
-import { Ellipsis } from "lucide-react";
 import { CreateHeader } from "@/components/ui/create-header";
 import { useRouter } from "next/navigation";
 

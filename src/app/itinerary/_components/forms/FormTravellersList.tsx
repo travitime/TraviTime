@@ -4,7 +4,6 @@ import { useForm, useFieldArray } from "react-hook-form";
 import React from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@radix-ui/react-dropdown-menu";
 
 type FormData = {
   members: { name: string; email: string }[];
@@ -15,7 +14,7 @@ export default function FormTravellersList() {
     register,
     handleSubmit,
     control,
-    formState: { errors },
+    formState: {},
   } = useForm<FormData>({
     defaultValues: {
       members: [
@@ -31,7 +30,7 @@ export default function FormTravellersList() {
     name: "members",
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: FormData) => {
     console.log(data);
   };
 
@@ -39,7 +38,7 @@ export default function FormTravellersList() {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-4">
       <h1>Travellers Info</h1>
       {fields.map((field, index) => (
-        <div className="space-y-1">
+        <div className="space-y-1" key={index}>
           <div key={field.id} className="flex space-x-2">
             <div className="w-2/5">
               <label className="block text-sm font-medium">

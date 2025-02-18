@@ -18,7 +18,6 @@ export function JumpToSection({ sections, className }: JumpToSectionProps) {
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollPosition = window.scrollY;
       let currentSection: string | null = null;
 
       sections.forEach((section) => {

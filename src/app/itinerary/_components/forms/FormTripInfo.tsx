@@ -5,7 +5,6 @@ import React from "react";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
 type FormData = {
   destinationCountry: string;
   cities: string;
@@ -19,7 +18,7 @@ export default function FormTripInfo() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: {},
   } = useForm<FormData>();
 
   const onSubmit = (data: FormData) => {

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
@@ -54,15 +54,16 @@ type SelectedCell = {
 export default function ItineraryBuilder() {
   const [selectedCell, setSelectedCell] = useState<SelectedCell>(null);
   const [itinerary, setItinerary] = useState<Record<string, ItineraryData>>({});
-  const [places, setPlaces] = useState<Record<string, string>>({});
   const { register, handleSubmit, reset, setValue } = useForm<ItineraryData>();
 
   const openModal = (day: string, time: string) => {
-    const existingEntry = Object.entries(itinerary).find(([key, _]) =>
+    const existingEntry = Object.entries(itinerary).find(([key]) =>
       key.startsWith(`${day}-${time}`)
     );
     if (existingEntry) {
       const [_, data] = existingEntry;
+
+      console.log(_, data);
       setValue("title", data.title);
       setValue("fromTime", data.fromTime);
       setValue("toTime", data.toTime);
@@ -127,14 +128,15 @@ export default function ItineraryBuilder() {
                   placeholder="Enter places to visit"
                 />
               </td> */}
-              {timeSlots.map((time, index) => {
-                const entry = Object.entries(itinerary).find(([key, _]) => {
+              {timeSlots.map((time) => {
+                const entry = Object.entries(itinerary).find(([key]) => {
                   const [entryDay, from, to] = key.split("-");
                   return entryDay === day && time >= from && time < to;
                 });
 
                 if (entry) {
                   const [_, { title, fromTime, toTime }] = entry;
+                  console.log(_, title, fromTime, toTime);
                   if (time === fromTime) {
                     const colSpan =
                       timeSlots.indexOf(toTime) - timeSlots.indexOf(fromTime);
