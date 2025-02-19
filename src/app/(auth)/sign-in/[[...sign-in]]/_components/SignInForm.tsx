@@ -1,12 +1,12 @@
-import * as Form from "@radix-ui/react-form";
+"use client";
+
+import { useTWSignIn } from "../../../providers/clerk/useTWSignIn";
+import { useTWSignOut } from "../../../providers/clerk/useTWSignOut";
 import { Input } from "@/components/ui/input";
 import { Facebook, Twitter, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import { useTWSignUp } from "../../../providers/clerk/useTWSignUp";
-import { useTWSignOut } from "../../../providers/clerk/useTWSignOut";
-export default function SignUpForm() {
-  const router = useRouter();
+
+export default function CustomSignIn() {
   const {
     email,
     setEmail,
@@ -16,13 +16,10 @@ export default function SignUpForm() {
     setVerificationCode,
     error,
     pendingVerification,
-    handleSignUp,
-    handleVerifyEmail,
-  } = useTWSignUp();
+    handleSignIn,
+    handleVerifyCode,
+  } = useTWSignIn();
   const { handleSignOut } = useTWSignOut();
-  const handleSignUpClick = () => {
-    router.push("/dashboard");
-  };
   return (
     <div className="max-w-md mx-auto ">
       <h2 className="text-2xl font-bold mb-4">Sign up with</h2>
@@ -48,7 +45,7 @@ export default function SignUpForm() {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            handleSignUp();
+            handleSignIn();
           }}
           className="flex flex-col gap-4"
         >
@@ -69,19 +66,23 @@ export default function SignUpForm() {
           {error && (
             <p
               className="text-red-500 text-sm"
-              onClick={() => handleSignOut("/sign-up")}
+              onClick={() => handleSignOut("/sign-in")}
             >
               {error}
             </p>
           )}
-
-          <Button type="submit">Create your account</Button>
+          <button
+            type="submit"
+            className="bg-primary text-white py-2 px-4 rounded-md transition hover:bg-primary/80"
+          >
+            Sign In
+          </button>
         </form>
       ) : (
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            handleVerifyEmail();
+            handleVerifyCode();
           }}
           className="flex flex-col gap-4"
         >
@@ -93,11 +94,14 @@ export default function SignUpForm() {
             required
           />
           {error && <p className="text-red-500 text-sm">{error}</p>}
-
-          <Button type="submit">Verify Email</Button>
+          <button
+            type="submit"
+            className="bg-primary text-white py-2 px-4 rounded-md transition hover:bg-primary/80"
+          >
+            Verify Code
+          </button>
         </form>
       )}
-
       <p className="text-xs text-center text-gray-500 mt-4">
         By signing up, you agree to our{" "}
         <a href="#" className="font-medium text-black">
