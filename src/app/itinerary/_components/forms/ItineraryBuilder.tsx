@@ -4,200 +4,99 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { useForm } from "react-hook-form";
 
-const timeSlots: string[] = [
-  "08:00",
-  "09:00",
-  "10:00",
-  "11:00",
-  "12:00",
-  "13:00",
-  "14:00",
-  "15:00",
-  "16:00",
-  "17:00",
-  "18:00",
-  "19:00",
-  "20:00",
-  "21:00",
-  "22:00",
-  "23:00",
-  "24:00",
-];
-const days: string[] = Array.from({ length: 5 }, (_, i) => `Day ${i + 1}`);
-const activityTypes: string[] = [
-  "Flight",
-  "Hotel Check-in",
-  "Local Transport",
-  "Sightseeing",
-  "Dining",
-  "Leisure",
-  "Other",
-];
+const TIME_BLOCKS = ["Morning", "Noon", "Evening"];
 
-type ItineraryData = {
-  title: string;
-  fromTime: string;
-  toTime: string;
-  activityType: string;
-  notes?: string;
-};
+interface ActivityCell {
+  activity: string;
+}
 
-type SelectedCell = {
-  day: string;
-  fromTime: string;
-} | null;
+interface Day {
+  id: number;
+  blocks: ActivityCell[];
+}
 
 export default function ItineraryBuilder() {
-  const [selectedCell, setSelectedCell] = useState<SelectedCell>(null);
-  const [itinerary, setItinerary] = useState<Record<string, ItineraryData>>({});
-  const { register, handleSubmit, reset, setValue } = useForm<ItineraryData>();
+  const [days, setDays] = useState<Day[]>([
+    { id: 1, blocks: [{ activity: "" }, { activity: "" }, { activity: "" }] },
+    { id: 2, blocks: [{ activity: "" }, { activity: "" }, { activity: "" }] },
+  ]);
+  const [editing, setEditing] = useState<{ dayIdx: number; blockIdx: number } | null>(null);
+  const [inputValue, setInputValue] = useState("");
 
-  const openModal = (day: string, time: string) => {
-    const existingEntry = Object.entries(itinerary).find(([key]) =>
-      key.startsWith(`${day}-${time}`)
-    );
-    if (existingEntry) {
-      const [_, data] = existingEntry;
+  const handleCellClick = (dayIdx: number, blockIdx: number) => {
+    setEditing({ dayIdx, blockIdx });
+    setInputValue(days[dayIdx].blocks[blockIdx].activity);
+  };
 
-      console.log(_, data);
-      setValue("title", data.title);
-      setValue("fromTime", data.fromTime);
-      setValue("toTime", data.toTime);
-      setValue("activityType", data.activityType);
-      setValue("notes", data.notes || "");
-    } else {
-      reset({ fromTime: time });
+  const handleSave = () => {
+    if (editing) {
+      const newDays = [...days];
+      newDays[editing.dayIdx].blocks[editing.blockIdx].activity = inputValue;
+      setDays(newDays);
+      setEditing(null);
+      setInputValue("");
     }
-    setSelectedCell({ day, fromTime: time });
   };
 
-  const onSubmit = (data: ItineraryData) => {
-    if (!selectedCell) return;
-    setItinerary((prev) => ({
-      ...prev,
-      [`${selectedCell.day}-${data.fromTime}-${data.toTime}`]: data,
-    }));
-    setSelectedCell(null);
-    reset();
-  };
-
-  const deleteActivity = () => {
-    if (!selectedCell) return;
-    setItinerary((prev) => {
-      const updated = { ...prev };
-      Object.keys(updated).forEach((key) => {
-        if (key.startsWith(`${selectedCell.day}-${selectedCell.fromTime}`)) {
-          delete updated[key];
-        }
-      });
-      return updated;
-    });
-    setSelectedCell(null);
-    reset();
+  const handleAddDay = () => {
+    setDays([
+      ...days,
+      { id: days.length + 1, blocks: [{ activity: "" }, { activity: "" }, { activity: "" }] },
+    ]);
   };
 
   return (
-    <div className="p-4 bg-white ">
-      <h1>Itinerary Builder</h1>
-      <table className="mt-4 w-full border border-collapse text-sm shadow-lg rounded-md overflow-hidden">
+    <div className="bg-white p-4 rounded-xl">
+      <table className="w-full border border-collapse text-sm shadow rounded-md overflow-hidden">
         <thead>
-          <tr className="bg-gray-200 text-left">
-            <th className="border p-3">Day</th>
-            {/* <th className="border p-3">Places to Visit</th> */}
-            {timeSlots.map((time) => (
-              <th key={time} className="border p-3">
-                {time}
-              </th>
+          <tr className="bg-gray-100 text-left">
+            <th className="border p-3 font-medium">&nbsp;</th>
+            {TIME_BLOCKS.map((block) => (
+              <th key={block} className="border p-3 font-medium text-center">{block}</th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {days.map((day) => (
-            <tr key={day} className="even:bg-gray-50">
-              <td className="border p-3 font-bold bg-gray-100">{day}</td>
-              {/* <td className="border p-3">
-                <Input
-                  value={places[day] || ""}
-                  onChange={(e) =>
-                    setPlaces({ ...places, [day]: e.target.value })
-                  }
-                  placeholder="Enter places to visit"
-                />
-              </td> */}
-              {timeSlots.map((time) => {
-                const entry = Object.entries(itinerary).find(([key]) => {
-                  const [entryDay, from, to] = key.split("-");
-                  return entryDay === day && time >= from && time < to;
-                });
-
-                if (entry) {
-                  const [_, { title, fromTime, toTime }] = entry;
-                  console.log(_, title, fromTime, toTime);
-                  if (time === fromTime) {
-                    const colSpan =
-                      timeSlots.indexOf(toTime) - timeSlots.indexOf(fromTime);
-                    return (
-                      <td
-                        key={time}
-                        className="border p-3 bg-blue-200 text-center cursor-pointer"
-                        colSpan={colSpan > 0 ? colSpan : 1}
-                        onClick={() => openModal(day, fromTime)}
-                      >
-                        {title}
-                      </td>
-                    );
-                  }
-                  return null;
-                }
-                return (
-                  <td
-                    key={time}
-                    className="border p-3 cursor-pointer hover:bg-gray-100"
-                    onClick={() => openModal(day, time)}
-                  ></td>
-                );
-              })}
+          {days.map((day, dayIdx) => (
+            <tr key={day.id} className="even:bg-gray-50">
+              <td className="border p-3 font-semibold text-center">Day {day.id}</td>
+              {TIME_BLOCKS.map((block, blockIdx) => (
+                <td
+                  key={block}
+                  className="border p-3 cursor-pointer hover:bg-indigo-50 text-center min-w-[120px]"
+                  onClick={() => handleCellClick(dayIdx, blockIdx)}
+                >
+                  {day.blocks[blockIdx].activity || <span className="text-gray-300">&nbsp;</span>}
+                </td>
+              ))}
             </tr>
           ))}
         </tbody>
       </table>
-
-      <Dialog
-        open={!!selectedCell}
-        onOpenChange={(open) => !open && setSelectedCell(null)}
-      >
+      <div className="mt-4 flex justify-end">
+        <Button type="button" variant="outline" onClick={handleAddDay}>
+          Add day
+        </Button>
+      </div>
+      <Dialog open={!!editing} onOpenChange={(open) => !open && setEditing(null)}>
         <DialogContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <Input {...register("title")} placeholder="Title" required />
+          <div className="space-y-4">
             <Input
-              {...register("fromTime")}
-              defaultValue={selectedCell?.fromTime}
-              readOnly
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder="Enter activity"
+              autoFocus
             />
-            <Input {...register("toTime")} placeholder="To Time" required />
-            <Select {...register("activityType")} required>
-              {activityTypes.map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
-            </Select>
-            <Textarea {...register("notes")} placeholder="Notes" />
-            <div className="flex justify-between">
-              <Button
-                type="button"
-                variant="destructive"
-                onClick={deleteActivity}
-              >
-                Delete
+            <div className="flex justify-end gap-2">
+              <Button type="button" variant="secondary" onClick={() => setEditing(null)}>
+                Cancel
               </Button>
-              <Button type="submit">Save</Button>
+              <Button type="button" onClick={handleSave}>
+                Save
+              </Button>
             </div>
-          </form>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
