@@ -100,7 +100,7 @@ export default function ItineraryBuilder({
         </tbody>
       </table>
       
-      <div className="mt-4 flex justify-end">
+      <div className=" flex justify-end p-2">
         <Button type="button" variant="outline" onClick={onAddDay}>
           Add day
         </Button>

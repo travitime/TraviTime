@@ -19,7 +19,7 @@ const HeaderAside: React.FC = () => {
       <Button variant={"ghost"}>
         <Bell size={32} />
       </Button>
-      <Button variant={"ghost"} onClick={() => handleSignOut("/sign-in")}>
+      <Button variant={"ghost"} onClick={() => handleSignOut()}>
         {profileImage && (
           <img
             src={profileImage}

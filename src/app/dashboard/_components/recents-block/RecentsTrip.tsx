@@ -1,4 +1,5 @@
-import React from "react";
+'use client';
+import React, { useState } from "react";
 import Image from "next/image";
 import { Ellipsis } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,7 @@ import Card from "../Card";
 import RecentsTripTable from "./RecentsTripTable";
 
 export default function RecentsTrip() {
+  const [itineraries, setItineraries] = useState([]);
   const EmptyState = () => {
     return (
       <>
@@ -36,7 +38,7 @@ export default function RecentsTrip() {
         <h2 className="text-lg font-semibold">Recent Trips</h2>
         <Ellipsis size={16} />
       </div>
-      {true ? <RecentsTripTable /> : <EmptyState />}
+      {itineraries.length > 0 ? <RecentsTripTable /> : <EmptyState />}
     </Card>
   );
 }

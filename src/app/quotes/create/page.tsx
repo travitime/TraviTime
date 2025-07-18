@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
+import { CreateHeader } from '@/components/ui/create-header'
 import { Card } from '@/components/ui/card'
 import { QuoteForm } from '../_components/QuoteForm'
 import { QuoteSidebar } from '../_components/QuoteSidebar'
@@ -79,13 +79,11 @@ export default function CreateQuotePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Full-width header */}
-      <div className="w-full bg-white border-b border-gray-200 px-10 py-6 flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-gray-900">Create Quote</h1>
-        <div className="flex gap-3">
-          <Button variant="outline" className="px-6 py-2 text-base">Close</Button>
-          <Button className="px-6 py-2 text-base bg-blue-700 hover:bg-blue-800">Create Quote</Button>
-        </div>
-      </div>
+      <CreateHeader
+        title="Create Quote"
+        primaryAction={{ label: 'Create Quote', onClick: () => {} }}
+        secondaryAction={{ label: 'Close', onClick: () => {} }}
+      />
       <div className="flex">
         {/* Sidebar Navigation */}
         <QuoteSidebar 

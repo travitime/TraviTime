@@ -1,11 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
+import { CreateHeader } from '@/components/ui/create-header'
 import { Card } from '@/components/ui/card'
 import { CustomerForm } from '../_components/CustomerForm'
 import { CustomerSidebar } from '../_components/CustomerSidebar'
 import { ReactiveReview } from '../_components/ReactiveReview'
+import { useRouter } from 'next/navigation'
 
 // Shared form data interface
 export interface CustomerFormData {
@@ -41,6 +42,7 @@ export interface CustomerFormData {
 }
 
 export default function CreateCustomerPage() {
+  const router = useRouter();
   const [currentSection, setCurrentSection] = useState('basic-info')
   const [formData, setFormData] = useState<CustomerFormData>({
     basicInfo: {
@@ -86,18 +88,18 @@ export default function CreateCustomerPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Full-width header */}
-      <div className="w-full bg-white border-b border-gray-200 px-10 py-6 flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-gray-900">Create Customer</h1>
-        <div className="flex gap-3">
-          <Button variant="outline" className="px-6 py-2 text-base">Close</Button>
-          <Button className="px-6 py-2 text-base bg-blue-700 hover:bg-blue-800">Create Customer</Button>
-        </div>
-      </div>
+      <CreateHeader
+        title="Create Customer"
+        primaryAction={{ label: 'Create Customer', onClick: () => {} }}
+        secondaryAction={{ label: 'Close', onClick: () => {
+          router.push("/customers");
+        } }}
+      />
       <div className="flex">
         {/* Sidebar Navigation */}
-        <CustomerSidebar 
-          currentStep={currentSection} 
-          onStepChange={setCurrentSection} 
+        <CustomerSidebar
+          currentStep={currentSection}
+          onStepChange={setCurrentSection}
         />
         {/* Main Content */}
         <div className="flex-1 p-6">
@@ -106,13 +108,13 @@ export default function CreateCustomerPage() {
             <div className="grid grid-cols-3 gap-6">
               {/* Forms Section */}
               <div className="col-span-2">
-               
-                  <CustomerForm 
+
+                  <CustomerForm
                     formData={formData}
                     updateFormData={updateFormData}
                     currentSection={currentSection}
                   />
-               
+
               </div>
               {/* Review Section */}
               <div className="col-span-1">

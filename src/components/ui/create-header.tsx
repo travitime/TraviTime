@@ -15,16 +15,25 @@ export function CreateHeader({
   secondaryAction,
 }: CreateHeaderProps) {
   return (
-    <div className="flex items-center justify-between p-4">
-      <h1 className="text-2xl font-semibold">{title}</h1>
-      <div className="flex space-x-2">
+    <div className="w-full bg-white border-b border-gray-200 px-10 py-6 flex items-center justify-between">
+      <h1 className="text-3xl font-bold text-gray-900">{title}</h1>
+      <div className="flex gap-3">
         {secondaryAction && (
-          <Button variant="outline" onClick={secondaryAction.onClick}>
+          <Button
+            variant="outline"
+            onClick={secondaryAction.onClick}
+            
+          >
             {secondaryAction.label}
           </Button>
         )}
         {primaryAction && (
-          <Button onClick={primaryAction.onClick}>{primaryAction.label}</Button>
+          <Button
+            onClick={primaryAction.onClick}
+           
+          >
+            {primaryAction.label}
+          </Button>
         )}
       </div>
     </div>

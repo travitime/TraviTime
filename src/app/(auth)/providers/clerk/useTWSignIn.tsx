@@ -18,6 +18,20 @@ export function useTWSignIn() {
   const [pendingVerification, setPendingVerification] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
 
+  const handleOAuthSignIn = async (strategy: 'oauth_google') => {
+    if (!isLoaded) return;
+
+    try {
+      await signIn.authenticateWithRedirect({
+        strategy: strategy,
+        redirectUrl: "/sso-callback",
+        redirectUrlComplete: "/dashboard",
+      });
+    } catch (err: any) {
+      setError(err.errors?.[0]?.message || "Something went wrong.");
+    }
+  };
+
   const handleSignIn = async () => {
     if (!isLoaded) return;
 
@@ -32,7 +46,7 @@ export function useTWSignIn() {
         console.log(user);
         setUser({
           id: user?.id || null,
-          email: user?.primaryEmailAddress || null,
+          email: user?.primaryEmailAddress?.emailAddress || null,
           firstName: user?.firstName || null,
           lastName: user?.lastName || null,
           profileImage: user?.imageUrl || null,
@@ -60,7 +74,7 @@ export function useTWSignIn() {
         // Store user data in Zustand store
         setUser({
           id: user?.id || null,
-          email: user?.primaryEmailAddress || null,
+          email: user?.primaryEmailAddress?.emailAddress || null,
           firstName: user?.firstName || null,
           lastName: user?.lastName || null,
           profileImage: user?.imageUrl || null,
@@ -83,5 +97,6 @@ export function useTWSignIn() {
     pendingVerification,
     handleSignIn,
     handleVerifyCode,
+    handleOAuthSignIn,
   };
 }

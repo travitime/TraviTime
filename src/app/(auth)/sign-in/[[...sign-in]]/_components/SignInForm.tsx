@@ -18,13 +18,18 @@ export default function CustomSignIn() {
     pendingVerification,
     handleSignIn,
     handleVerifyCode,
+    handleOAuthSignIn,
   } = useTWSignIn();
   const { handleSignOut } = useTWSignOut();
   return (
     <div className="max-w-md mx-auto ">
       <h2 className="text-2xl font-bold mb-4">Sign up with</h2>
       <div className="flex gap-2 mb-4">
-        <Button variant="outline" className="flex-1">
+        <Button
+          variant="outline"
+          className="flex-1"
+          onClick={() => handleOAuthSignIn("oauth_google")}
+        >
           <Facebook className="w-5 h-5" />
         </Button>
         <Button variant="outline" className="flex-1">
@@ -71,12 +76,13 @@ export default function CustomSignIn() {
               {error}
             </p>
           )}
-          <button
+          {/* <button
             type="submit"
             className="bg-primary text-white py-2 px-4 rounded-md transition hover:bg-primary/80"
           >
             Sign In
-          </button>
+          </button> */}
+          <Button type="submit" variant="default">Sign In</Button>
         </form>
       ) : (
         <form

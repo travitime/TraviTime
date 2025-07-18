@@ -1,9 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { CreateHeader } from "@/components/ui/create-header";
 import FormBasicInfo from "../_components/forms/FormBasicInfo";
 import ItineraryBuilder from "../_components/forms/ItineraryBuilder";
 import ActivityPanel from "../_components/forms/ActivityPanel";
+import AIAssist from "@/app/dashboard/_components/quick-actions/AIAssist";
+import Card from "@/app/dashboard/_components/Card";
 
 const TIME_BLOCKS = ["Morning", "Noon", "Evening"];
 
@@ -296,65 +299,31 @@ export default function CreateItineraryPage() {
   const isNextDisabled = selectedCell?.dayIdx === days.length - 1 && selectedCell?.blockIdx === TIME_BLOCKS.length - 1;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold">Create Itinerary</h1>
-        <div className="flex gap-3">
-          <button
-            className="px-4 py-2 rounded border border-gray-300 bg-white hover:bg-gray-100"
-            onClick={() => router.push("/dashboard")}
-          >
-            Close
-          </button>
-          <button
-            className="px-6 py-2 rounded bg-indigo-700 text-white font-semibold hover:bg-indigo-800"
-            onClick={() => {/* Save & Publish logic here */}}
-          >
-            Save & Publish
-          </button>
-        </div>
-      </div>
-      
-      {/* Main Content */}
-      <div className="grid grid-cols-12 gap-8">
-        {/* Left: Main Form */}
-        <div className="col-span-8 bg-white rounded-xl p-8 shadow">
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold mb-4">Basic Info</h2>
-            <FormBasicInfo />
-          </div>
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Itinerary Builder</h2>
-            <ItineraryBuilder 
-              days={days}
-              selectedCell={selectedCell}
-              onCellClick={handleCellClick}
-              onAddDay={handleAddDay}
-            />
-          </div>
+    <div className="flex flex-col h-screen bg-gray-50">
+      <CreateHeader
+        title="Create Itinerary"
+        primaryAction={{ label: "Create Itinerary", onClick: () => {} }}
+        secondaryAction={{ label: "Close", onClick: () => {
+          router.push("/itinerary/list");
+        } }}
+      />  
+      <div className="flex flex-1 overflow-hidden">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 space-y-4">
+         <Card bg="bg-white"   padding="p-4" title="Basic Information">
+          <FormBasicInfo />
+         </Card>
+          <ItineraryBuilder 
+            days={days}
+            selectedCell={selectedCell}
+            onCellClick={handleCellClick}
+            onAddDay={handleAddDay}
+          />
         </div>
         
         {/* Right: Sidebar */}
-        <div className="col-span-4 flex flex-col gap-6">
+        <div className="w-1/3 p-4 sm:p-6 md:p-8 border-l border-gray-200 overflow-auto">
           {/* Assistant */}
-          <div className="bg-orange-50 border border-orange-200 rounded-xl p-6">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-orange-500 text-lg">⚡</span>
-              <span className="font-semibold">Assistant</span>
-            </div>
-            <p className="text-sm text-gray-700 mb-3">
-              Get a draft itinerary built by AI Assistant and just edit it based on customer need!
-            </p>
-            <input
-              className="w-full border rounded px-3 py-2 text-sm mb-2"
-              placeholder="I want to..."
-              disabled
-            />
-            <button className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-500" disabled>
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M12 19v-6m0 0V5m0 8h6m-6 0H6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-            </button>
-          </div>
+          <AIAssist />
           
           {/* Activity Panel */}
           <div className="flex-1 ">

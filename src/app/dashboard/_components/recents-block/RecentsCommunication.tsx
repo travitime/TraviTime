@@ -1,24 +1,22 @@
-import React from "react";
+'use client';
+import React, { useState } from "react";
 import Image from "next/image";
 import { Ellipsis } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import RecentCommunicationThumbnail from "../../assets/recent-communication-thumbnail.svg";
 import Card from "../Card";
-const users = [
-  { name: "Jake Dicola", status: "Online", time: "", count: 3 },
-  {
-    name: "Jasmine Flinch",
-    status: "10 min ago",
-    time: "",
-    count: 2,
-    active: true,
-  },
-  { name: "Florence Nightingale", status: "Online", time: "", count: 1 },
-  { name: "Raja Raya", status: "20 min ago", time: "" },
-  { name: "Ramanathan Kin", status: "1 day ago", time: "" },
-];
+
+interface Customer {
+  name: string;
+  status: string;
+  time: string;
+  count?: number;
+  active?: boolean;
+}
 
 export default function RecentsCommunication() {
+  const [customers, setCustomers] = useState<Customer[]>([]);
+
   const Communications = () => {
     return (
       <div className="flex">
@@ -36,7 +34,7 @@ export default function RecentsCommunication() {
   const ConversationList = () => {
     return (
       <Card>
-        {users.map((user, index) => (
+        {customers.map((user, index) => (
           <div
             key={index}
             className={`flex items-center p-3 rounded-lg ${
@@ -71,7 +69,7 @@ export default function RecentsCommunication() {
           <p className="text-gray-700 mb-4">
             You do not have any customers. Create them and start engaging!
           </p>
-          <Button>Create Customer</Button>
+          <Button variant="outline">Create Customer</Button>
         </div>
         <div className="ml-4">
           <Image
@@ -90,8 +88,7 @@ export default function RecentsCommunication() {
         <h2 className="text-lg font-semibold">Recent Communication</h2>
         <Ellipsis size={16} />
       </div>
-      {/* <EmptyState /> */}
-      {true ? <Communications /> : <EmptyState />}
+      {customers.length > 0 ? <Communications /> : <EmptyState />}
     </Card>
   );
 }

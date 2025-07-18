@@ -354,9 +354,9 @@ export default function ActivityPanel({
             <div className="space-y-4">
               <h3 className="font-medium text-gray-900">Activity details</h3>
               
-              <div className="space-y-4">
+              <div className="space-y-4 border border-gray-200 rounded-lg ">
                 <div className="flex gap-3">
-                  <div className="mt-1">
+                  <div className=" bg-gray-100 p-2">
                     <Plane className="w-5 h-5 text-gray-400" />
                   </div>
                   <div className="flex-1 space-y-3">
@@ -364,13 +364,13 @@ export default function ActivityPanel({
                       placeholder="Title"
                       value={formData.title}
                       onChange={(e) => onFormDataChange('title', e.target.value)}
-                      className="font-medium"
+                      className="font-medium border-none"
                     />
                     <Textarea
                       placeholder="Description"
                       value={formData.description}
                       onChange={(e) => onFormDataChange('description', e.target.value)}
-                      className="resize-none"
+                      className="resize-none border-none"
                       rows={2}
                     />
                   </div>
