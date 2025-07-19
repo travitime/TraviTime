@@ -41,6 +41,11 @@ export default function CreateItineraryPage() {
   const [selectedCell, setSelectedCell] = useState<{ dayIdx: number; blockIdx: number } | null>(null);
   const [selectedActivityIdx, setSelectedActivityIdx] = useState<number>(0);
   const [draggedActivityIdx, setDraggedActivityIdx] = useState<number | null>(null);
+  const [draggedActivityInfo, setDraggedActivityInfo] = useState<{
+    dayIdx: number;
+    blockIdx: number;
+    activityIdx: number;
+  } | null>(null);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -298,6 +303,47 @@ export default function CreateItineraryPage() {
   const isPreviousDisabled = selectedCell?.dayIdx === 0 && selectedCell?.blockIdx === 0;
   const isNextDisabled = selectedCell?.dayIdx === days.length - 1 && selectedCell?.blockIdx === TIME_BLOCKS.length - 1;
 
+  const handleActivityDragStart = (
+    e: React.DragEvent,
+    dayIdx: number,
+    blockIdx: number,
+    activityIdx: number
+  ) => {
+    setDraggedActivityInfo({ dayIdx, blockIdx, activityIdx });
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', JSON.stringify({ dayIdx, blockIdx, activityIdx }));
+  };
+
+  const handleCellDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleCellDrop = (
+    e: React.DragEvent,
+    targetDayIdx: number,
+    targetBlockIdx: number
+  ) => {
+    e.preventDefault();
+    if (!draggedActivityInfo) return;
+    const { dayIdx: sourceDayIdx, blockIdx: sourceBlockIdx, activityIdx } = draggedActivityInfo;
+    // Don't drop into the same cell
+    if (sourceDayIdx === targetDayIdx && sourceBlockIdx === targetBlockIdx) {
+      setDraggedActivityInfo(null);
+      return;
+    }
+    const newDays = [...days];
+    const sourceActivities = newDays[sourceDayIdx].blocks[sourceBlockIdx];
+    const [movedActivity] = sourceActivities.splice(activityIdx, 1);
+    newDays[targetDayIdx].blocks[targetBlockIdx].push(movedActivity);
+    setDays(newDays);
+    setDraggedActivityInfo(null);
+  };
+
+  const handleActivityDragEnd = () => {
+    setDraggedActivityInfo(null);
+  };
+
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       <CreateHeader
@@ -317,6 +363,11 @@ export default function CreateItineraryPage() {
             selectedCell={selectedCell}
             onCellClick={handleCellClick}
             onAddDay={handleAddDay}
+            onActivityDragStart={handleActivityDragStart}
+            onCellDragOver={handleCellDragOver}
+            onCellDrop={handleCellDrop}
+            onActivityDragEnd={handleActivityDragEnd}
+            draggedActivityInfo={draggedActivityInfo}
           />
         </div>
         

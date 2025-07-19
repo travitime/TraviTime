@@ -23,13 +23,36 @@ interface ItineraryBuilderProps {
   selectedCell: { dayIdx: number; blockIdx: number } | null;
   onCellClick: (dayIdx: number, blockIdx: number) => void;
   onAddDay: () => void;
+  onActivityDragStart: (
+    e: React.DragEvent,
+    dayIdx: number,
+    blockIdx: number,
+    activityIdx: number
+  ) => void;
+  onCellDragOver: (e: React.DragEvent) => void;
+  onCellDrop: (
+    e: React.DragEvent,
+    dayIdx: number,
+    blockIdx: number
+  ) => void;
+  onActivityDragEnd: () => void;
+  draggedActivityInfo: {
+    dayIdx: number;
+    blockIdx: number;
+    activityIdx: number;
+  } | null;
 }
 
 export default function ItineraryBuilder({ 
   days, 
   selectedCell, 
   onCellClick, 
-  onAddDay 
+  onAddDay,
+  onActivityDragStart,
+  onCellDragOver,
+  onCellDrop,
+  onActivityDragEnd,
+  draggedActivityInfo
 }: ItineraryBuilderProps) {
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
@@ -53,16 +76,22 @@ export default function ItineraryBuilder({
               {TIME_BLOCKS.map((block, blockIdx) => {
                 const isSelected = selectedCell?.dayIdx === dayIdx && selectedCell?.blockIdx === blockIdx;
                 const activities = day.blocks[blockIdx];
-                
+                const isDropTarget =
+                  draggedActivityInfo &&
+                  (draggedActivityInfo.dayIdx !== dayIdx || draggedActivityInfo.blockIdx !== blockIdx);
                 return (
                   <td
                     key={block}
                     className={`border-b border-gray-200 p-4 cursor-pointer transition-colors min-w-[180px] min-h-[120px] align-top ${
                       isSelected 
                         ? 'bg-blue-100 border-blue-300' 
-                        : 'hover:bg-gray-50'
+                        : isDropTarget
+                          ? 'bg-green-100 border-green-300'
+                          : 'hover:bg-gray-50'
                     }`}
                     onClick={() => onCellClick(dayIdx, blockIdx)}
+                    onDragOver={onCellDragOver}
+                    onDrop={e => onCellDrop(e, dayIdx, blockIdx)}
                   >
                     <div className="space-y-2">
                       {activities.length > 0 ? (
@@ -70,6 +99,9 @@ export default function ItineraryBuilder({
                           <div 
                             key={activity.id}
                             className="p-2 bg-white rounded border border-gray-100 shadow-sm"
+                            draggable
+                            onDragStart={e => onActivityDragStart(e, dayIdx, blockIdx, activityIdx)}
+                            onDragEnd={onActivityDragEnd}
                           >
                             <div className="font-medium text-gray-900 text-xs truncate">
                               {activity.title || `Activity ${activityIdx + 1}`}
