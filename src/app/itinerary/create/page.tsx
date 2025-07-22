@@ -52,6 +52,9 @@ export default function CreateItineraryPage() {
     notes: ""
   });
 
+  // Add chat mode state here
+  const [isChatMode, setIsChatMode] = useState(false);
+
   const generateActivityId = () => {
     return `activity_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   };
@@ -372,36 +375,37 @@ export default function CreateItineraryPage() {
         </div>
         
         {/* Right: Sidebar */}
-        <div className="w-1/3 p-4 sm:p-6 md:p-8 border-l border-gray-200 overflow-auto">
+        <div className="w-1/3 p-4 sm:p-6 md:p-8 border-l border-gray-200 overflow-auto flex flex-col">
           {/* Assistant */}
-          <AIAssist />
-          
-          {/* Activity Panel */}
-          <div className="flex-1 ">
-            <ActivityPanel
-              selectedCell={selectedCell}
-              days={days}
-              selectedActivityIdx={selectedActivityIdx}
-              draggedActivityIdx={draggedActivityIdx}
-              formData={formData}
-              onCellClose={handleCellClose}
-              onActivitySelect={handleActivitySelect}
-              onAddActivity={handleAddActivity}
-              onDeleteActivity={handleDeleteActivity}
-              onDragStart={handleDragStart}
-              onDragOver={handleDragOver}
-              onDrop={handleDrop}
-              onDragEnd={handleDragEnd}
-              onMoveActivityUp={moveActivityUp}
-              onMoveActivityDown={moveActivityDown}
-              onFormDataChange={handleFormDataChange}
-              onSave={handleSave}
-              onPrevious={handlePrevious}
-              onNext={handleNext}
-              isPreviousDisabled={isPreviousDisabled}
-              isNextDisabled={isNextDisabled}
-            />
-          </div>
+          <AIAssist isChatMode={isChatMode} setIsChatMode={setIsChatMode} />
+          {/* Activity Panel - only show if not in chat mode */}
+          {!isChatMode && (
+            <div className="flex-1 ">
+              <ActivityPanel
+                selectedCell={selectedCell}
+                days={days}
+                selectedActivityIdx={selectedActivityIdx}
+                draggedActivityIdx={draggedActivityIdx}
+                formData={formData}
+                onCellClose={handleCellClose}
+                onActivitySelect={handleActivitySelect}
+                onAddActivity={handleAddActivity}
+                onDeleteActivity={handleDeleteActivity}
+                onDragStart={handleDragStart}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+                onDragEnd={handleDragEnd}
+                onMoveActivityUp={moveActivityUp}
+                onMoveActivityDown={moveActivityDown}
+                onFormDataChange={handleFormDataChange}
+                onSave={handleSave}
+                onPrevious={handlePrevious}
+                onNext={handleNext}
+                isPreviousDisabled={isPreviousDisabled}
+                isNextDisabled={isNextDisabled}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>
