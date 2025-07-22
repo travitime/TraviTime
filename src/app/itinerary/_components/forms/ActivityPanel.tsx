@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -48,6 +48,7 @@ interface ActivityPanelProps {
   onNext: () => void;
   isPreviousDisabled: boolean;
   isNextDisabled: boolean;
+  onAskAI?: () => void; // Add optional onAskAI prop
 }
 
 export default function ActivityPanel({
@@ -71,7 +72,8 @@ export default function ActivityPanel({
   onPrevious,
   onNext,
   isPreviousDisabled,
-  isNextDisabled
+  isNextDisabled,
+  onAskAI
 }: ActivityPanelProps) {
   
   const getSelectedDayAndTime = () => {
@@ -181,6 +183,34 @@ export default function ActivityPanel({
   }
 
   // Edit Activities Component (Shows when cell is selected)
+  // Local state for Ask AI workflow
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
+
+  // Handler for Ask AI button
+  const handleAskAI = async () => {
+    setAiLoading(true);
+    setAiError(null);
+    try {
+      const res = await fetch("/api/ai-description", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: formData.title, description: formData.description })
+      });
+      if (!res.ok) throw new Error("Failed to get AI description");
+      const data = await res.json();
+      if (data.description) {
+        onFormDataChange("description", data.description);
+      } else {
+        throw new Error("No description returned");
+      }
+    } catch (err: any) {
+      setAiError(err.message || "AI request failed");
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
   return (
     <div className="w-full bg-white rounded-lg p-6">
       <div className="space-y-6">
@@ -366,13 +396,30 @@ export default function ActivityPanel({
                       onChange={(e) => onFormDataChange('title', e.target.value)}
                       className="font-medium border-none"
                     />
-                    <Textarea
-                      placeholder="Description"
-                      value={formData.description}
-                      onChange={(e) => onFormDataChange('description', e.target.value)}
-                      className="resize-none border-none"
-                      rows={2}
-                    />
+                    <div className="space-y-2 relative">
+                      <Textarea
+                        placeholder="Description"
+                        value={formData.description}
+                        onChange={(e) => onFormDataChange('description', e.target.value)}
+                        className="resize-none border-none pr-20"
+                        rows={2}
+                      />
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        className="absolute top-2 right-2 z-10 px-2 py-1 text-xs"
+                        onClick={handleAskAI}
+                        disabled={aiLoading}
+                      >
+                        {aiLoading ? 'Generating...' : 'Ask AI'}
+                      </Button>
+                    </div>
+                    {aiError && (
+                      <div className="absolute right-0 mt-8 text-xs text-red-500 bg-white px-2 py-1 rounded shadow border border-red-200">
+                        {aiError}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
