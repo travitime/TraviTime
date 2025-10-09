@@ -76,7 +76,7 @@ export function QuoteReview({ formData }: QuoteReviewProps) {
                 <div>
                   <span className="text-gray-600">Accommodation:</span>
                   <div className="mt-1 space-y-1">
-                    {itineraryEstimate.accommodation.map((day, index) => (
+                    {itineraryEstimate.accommodation.map((day) => (
                       day.type && (
                         <div key={day.id} className="text-xs bg-gray-50 p-2 rounded">
                           <span className="font-medium">{day.day}:</span> {day.type}
@@ -93,7 +93,7 @@ export function QuoteReview({ formData }: QuoteReviewProps) {
                 <div>
                   <span className="text-gray-600">Food Options:</span>
                   <div className="mt-1 space-y-1">
-                    {itineraryEstimate.food.map((food, index) => (
+                    {itineraryEstimate.food.map((food) => (
                       food.included && (
                         <div key={food.id} className="text-xs bg-gray-50 p-2 rounded">
                           <span className="font-medium">{food.name}:</span> {food.included}
@@ -131,4 +131,4 @@ export function QuoteReview({ formData }: QuoteReviewProps) {
       </div>
     </div>
   )
-} 
+}

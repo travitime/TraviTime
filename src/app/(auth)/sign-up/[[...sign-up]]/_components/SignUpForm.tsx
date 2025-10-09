@@ -1,12 +1,9 @@
-import * as Form from "@radix-ui/react-form";
 import { Input } from "@/components/ui/input";
 import { Facebook, Twitter, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
 import { useTWSignUp } from "../../../providers/clerk/useTWSignUp";
 import { useTWSignOut } from "../../../providers/clerk/useTWSignOut";
 export default function SignUpForm() {
-  const router = useRouter();
   const {
     email,
     setEmail,
@@ -20,9 +17,6 @@ export default function SignUpForm() {
     handleVerifyEmail,
   } = useTWSignUp();
   const { handleSignOut } = useTWSignOut();
-  const handleSignUpClick = () => {
-    router.push("/dashboard");
-  };
   return (
     <div className="max-w-md mx-auto ">
       <h2 className="text-2xl font-bold mb-4">Sign up with</h2>

@@ -62,7 +62,6 @@ interface MultiSelectProps
   animation?: number;
   maxCount?: number;
   modalPopover?: boolean;
-  asChild?: boolean;
   className?: string;
 }
 
@@ -80,7 +79,6 @@ export const MultiSelect = React.forwardRef<
       animation = 0,
       maxCount = 3,
       modalPopover = false,
-      asChild = false,
       className,
       ...props
     },
@@ -325,4 +323,4 @@ export const MultiSelect = React.forwardRef<
   }
 );
 
-MultiSelect.displayName = "MultiSelect"; 
+MultiSelect.displayName = "MultiSelect";

@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { useReactTable, flexRender, getCoreRowModel } from "@tanstack/react-table";
+import { useReactTable, flexRender, getCoreRowModel, ColumnDef } from "@tanstack/react-table";
 
 export function Table({ children }: { children: React.ReactNode }) {
   return (
@@ -53,7 +53,7 @@ export function TanStackTable<TData>({
   data,
   className = "",
 }: {
-  columns: any[];
+  columns: ColumnDef<TData>[];
   data: TData[];
   className?: string;
 }) {

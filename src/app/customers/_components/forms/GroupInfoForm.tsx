@@ -74,7 +74,7 @@ export function GroupInfoForm({ data, onChange }: GroupInfoFormProps) {
         <h2 className="text-xl font-semibold text-gray-900 mb-6">Group Info</h2>
         
         <div className="space-y-8">
-          {data.subGroups.map((subGroup, groupIndex) => (
+          {data.subGroups.map((subGroup) => (
             <div key={subGroup.id} className="border border-gray-200 rounded-lg p-6">
               <h3 className="text-lg font-medium text-gray-900 mb-6">{subGroup.name}</h3>
               
@@ -137,4 +137,4 @@ export function GroupInfoForm({ data, onChange }: GroupInfoFormProps) {
       </div>
     </div>
   )
-} 
+}

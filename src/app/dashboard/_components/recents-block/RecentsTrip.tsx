@@ -8,7 +8,7 @@ import Card from "../Card";
 import RecentsTripTable from "./RecentsTripTable";
 
 export default function RecentsTrip() {
-  const [itineraries, setItineraries] = useState([]);
+  const [itineraries] = useState([]);
   const EmptyState = () => {
     return (
       <>

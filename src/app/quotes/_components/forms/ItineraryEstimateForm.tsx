@@ -1,7 +1,6 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select } from '@/components/ui/select'
 
@@ -32,17 +31,17 @@ interface ItineraryEstimateFormProps {
 }
 
 export function ItineraryEstimateForm({ data, onChange }: ItineraryEstimateFormProps) {
-  const handleInputChange = (field: keyof ItineraryEstimateData, value: any) => {
+  const handleInputChange = (field: keyof ItineraryEstimateData, value: ItineraryEstimateData[keyof ItineraryEstimateData]) => {
     onChange({ ...data, [field]: value })
   }
 
-  const handleAccommodationChange = (index: number, field: keyof AccommodationDay, value: any) => {
+  const handleAccommodationChange = (index: number, field: keyof AccommodationDay, value: AccommodationDay[keyof AccommodationDay]) => {
     const updatedAccommodation = [...data.accommodation]
     updatedAccommodation[index] = { ...updatedAccommodation[index], [field]: value }
     handleInputChange('accommodation', updatedAccommodation)
   }
 
-  const handleFoodChange = (index: number, field: keyof FoodOption, value: any) => {
+  const handleFoodChange = (index: number, field: keyof FoodOption, value: FoodOption[keyof FoodOption]) => {
     const updatedFood = [...data.food]
     updatedFood[index] = { ...updatedFood[index], [field]: value }
     handleInputChange('food', updatedFood)
@@ -190,4 +189,4 @@ export function ItineraryEstimateForm({ data, onChange }: ItineraryEstimateFormP
       </div>
     </div>
   )
-} 
+}

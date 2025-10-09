@@ -78,7 +78,7 @@ export default function CreateCustomerPage() {
     }
   })
 
-  const updateFormData = (section: keyof CustomerFormData, data: any) => {
+  const updateFormData = (section: keyof CustomerFormData, data: CustomerFormData[keyof CustomerFormData]) => {
     setFormData(prev => ({
       ...prev,
       [section]: data
@@ -128,4 +128,4 @@ export default function CreateCustomerPage() {
       </div>
     </div>
   )
-} 
+}

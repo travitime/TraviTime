@@ -3,6 +3,14 @@ import Card from "../../../dashboard/_components/Card";
 import { TanStackTable } from "@/components/ui/table";
 import { Cell } from "@tanstack/react-table";
 
+interface ItineraryData {
+  group: string;
+  destinations: string;
+  date: string;
+  budget: string;
+  status: string;
+}
+
 export default function TableItineraryList() {
   const data = [
     {
@@ -63,7 +71,7 @@ export default function TableItineraryList() {
       {
         header: "Status",
         accessorKey: "status",
-        cell: ({ cell }: { cell: Cell<any, unknown> }) => (
+        cell: ({ cell }: { cell: Cell<ItineraryData, unknown> }) => (
           <span className="px-3 py-1 rounded-full text-sm font-medium">
             {String(cell.getValue())}
           </span>

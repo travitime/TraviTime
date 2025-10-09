@@ -69,7 +69,7 @@ export default function CreateQuotePage() {
     }
   })
 
-  const updateFormData = (section: keyof QuoteFormData, data: any) => {
+  const updateFormData = (section: keyof QuoteFormData, data: QuoteFormData[keyof QuoteFormData]) => {
     setFormData(prev => ({
       ...prev,
       [section]: data
@@ -115,4 +115,4 @@ export default function CreateQuotePage() {
       </div>
     </div>
   )
-} 
+}

@@ -1,7 +1,6 @@
 "use client";
 import SignInForm from "./_components/SignInForm";
 
-import Image from "next/image";
 import SignUpIntro from "../../sign-up/[[...sign-up]]/_components/SignUpIntro";
 export default function SignInPage() {
   return (

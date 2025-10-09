@@ -16,12 +16,12 @@ export function ReviewForm() {
             <h3 className="text-lg font-medium text-gray-900 mb-2">Review Summary</h3>
             <p className="text-sm">
               Complete all the previous sections to see a summary of the customer information here.
-              Once you've filled in the Basic Info, Trip Info, and Group Info sections, 
-              you'll be able to review all details before creating the customer.
+              Once you&apos;ve filled in the Basic Info, Trip Info, and Group Info sections, 
+              you&apos;ll be able to review all details before creating the customer.
             </p>
           </div>
         </div>
       </div>
     </div>
   )
-} 
+}

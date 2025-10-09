@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Card from "../Card";
 import TodoList, { Task } from "./ToDoList";
 export default function ToDos() {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks] = useState<Task[]>([]);
   const completedTasks = tasks.filter((task) => task.completed).length;
   return (
     <Card bg="bg-gray-50" padding="p-4">

@@ -115,7 +115,7 @@ export function ReactiveReview({ formData }: ReactiveReviewProps) {
           <h4 className="text-sm font-medium text-gray-900 mb-3">Group Information</h4>
           {hasGroupInfo ? (
             <div className="space-y-3">
-              {groupInfo.subGroups.map((subGroup, index) => {
+              {groupInfo.subGroups.map((subGroup) => {
                 const hasMembers = subGroup.members.some(member => member.fullName || member.emailId)
                 if (!hasMembers) return null
                 
@@ -123,7 +123,7 @@ export function ReactiveReview({ formData }: ReactiveReviewProps) {
                   <div key={subGroup.id} className="border border-gray-200 rounded p-3">
                     <h5 className="text-xs font-medium text-gray-700 mb-2">{subGroup.name}</h5>
                     <div className="space-y-1">
-                      {subGroup.members.map((member, memberIndex) => {
+                      {subGroup.members.map((member) => {
                         if (!member.fullName && !member.emailId) return null
                         return (
                           <div key={member.id} className="text-xs">
@@ -159,4 +159,4 @@ export function ReactiveReview({ formData }: ReactiveReviewProps) {
       </div>
     </div>
   )
-} 
+}

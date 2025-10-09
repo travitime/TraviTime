@@ -15,7 +15,7 @@ interface Customer {
 }
 
 export default function RecentsCommunication() {
-  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [customers] = useState<Customer[]>([]);
 
   const Communications = () => {
     return (

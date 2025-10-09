@@ -27,8 +27,9 @@ export function useTWSignIn() {
         redirectUrl: "/sso-callback",
         redirectUrlComplete: "/dashboard",
       });
-    } catch (err: any) {
-      setError(err.errors?.[0]?.message || "Something went wrong.");
+    } catch (err: unknown) {
+      const error = err as { errors?: Array<{ message: string }> };
+      setError(error.errors?.[0]?.message || "Something went wrong.");
     }
   };
 
@@ -55,8 +56,9 @@ export function useTWSignIn() {
       } else if (result.status === "needs_first_factor") {
         setPendingVerification(true);
       }
-    } catch (err: any) {
-      setError(err.errors?.[0]?.message || "Invalid credentials");
+    } catch (err: unknown) {
+      const error = err as { errors?: Array<{ message: string }> };
+      setError(error.errors?.[0]?.message || "Invalid credentials");
     }
   };
 
@@ -81,8 +83,9 @@ export function useTWSignIn() {
         });
         router.push("/dashboard"); // Manually redirect
       }
-    } catch (err: any) {
-      setError(err.errors?.[0]?.message || "Invalid verification code");
+    } catch (err: unknown) {
+      const error = err as { errors?: Array<{ message: string }> };
+      setError(error.errors?.[0]?.message || "Invalid verification code");
     }
   };
 

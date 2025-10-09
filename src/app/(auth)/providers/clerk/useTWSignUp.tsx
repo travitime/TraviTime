@@ -26,8 +26,9 @@ export function useTWSignUp() {
       // Send verification email
       await signUp.prepareEmailAddressVerification();
       setPendingVerification(true);
-    } catch (err: any) {
-      setError(err.errors?.[0]?.message || "Something went wrong");
+    } catch (err: unknown) {
+      const error = err as { errors?: Array<{ message: string }> };
+      setError(error.errors?.[0]?.message || "Something went wrong");
     }
   };
 
@@ -43,8 +44,9 @@ export function useTWSignUp() {
         await setActive({ session: result.createdSessionId });
         router.push("/dashboard"); // Redirect after successful sign-up
       }
-    } catch (err: any) {
-      setError(err.errors?.[0]?.message || "Invalid verification code");
+    } catch (err: unknown) {
+      const error = err as { errors?: Array<{ message: string }> };
+      setError(error.errors?.[0]?.message || "Invalid verification code");
     }
   };
 

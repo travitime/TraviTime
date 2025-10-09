@@ -8,7 +8,7 @@ import Card from '@/app/dashboard/_components/Card'
 
 interface CustomerFormProps {
   formData: CustomerFormData
-  updateFormData: (section: keyof CustomerFormData, data: any) => void
+  updateFormData: (section: keyof CustomerFormData, data: CustomerFormData[keyof CustomerFormData]) => void
   currentSection: string
 }
 
@@ -46,4 +46,4 @@ export function CustomerForm({ formData, updateFormData, currentSection }: Custo
       </div>
     </div>
   )
-} 
+}

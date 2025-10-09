@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
-import { Upload, ArrowLeft, ArrowRight, Clock, Plane, MapPin, Plus, X, GripVertical, ChevronUp, ChevronDown } from "lucide-react";
+import { Upload, ArrowLeft, ArrowRight, Clock, Plane, Plus, X, GripVertical, ChevronUp, ChevronDown } from "lucide-react";
 
 const TIME_BLOCKS = ["Morning", "Noon", "Evening"];
 
@@ -48,7 +48,6 @@ interface ActivityPanelProps {
   onNext: () => void;
   isPreviousDisabled: boolean;
   isNextDisabled: boolean;
-  onAskAI?: () => void; // Add optional onAskAI prop
 }
 
 export default function ActivityPanel({
@@ -72,10 +71,13 @@ export default function ActivityPanel({
   onPrevious,
   onNext,
   isPreviousDisabled,
-  isNextDisabled,
-  onAskAI
+  isNextDisabled
 }: ActivityPanelProps) {
   
+  // Local state for Ask AI workflow - moved to top to avoid conditional hooks
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
+
   const getSelectedDayAndTime = () => {
     if (!selectedCell) return { day: "Day 1", time: "Morning" };
     return {
@@ -87,6 +89,31 @@ export default function ActivityPanel({
   const getCurrentActivities = () => {
     if (!selectedCell) return [];
     return days[selectedCell.dayIdx].blocks[selectedCell.blockIdx];
+  };
+
+  // Handler for Ask AI button
+  const handleAskAI = async () => {
+    setAiLoading(true);
+    setAiError(null);
+    try {
+      const res = await fetch("/api/ai-description", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: formData.title, description: formData.description })
+      });
+      if (!res.ok) throw new Error("Failed to get AI description");
+      const data = await res.json();
+      if (data.description) {
+        onFormDataChange("description", data.description);
+      } else {
+        throw new Error("No description returned");
+      }
+    } catch (err: unknown) {
+      const error = err as { message?: string };
+      setAiError(error.message || "AI request failed");
+    } finally {
+      setAiLoading(false);
+    }
   };
 
   // Search For Activities Component (Initial State)
@@ -183,34 +210,6 @@ export default function ActivityPanel({
   }
 
   // Edit Activities Component (Shows when cell is selected)
-  // Local state for Ask AI workflow
-  const [aiLoading, setAiLoading] = useState(false);
-  const [aiError, setAiError] = useState<string | null>(null);
-
-  // Handler for Ask AI button
-  const handleAskAI = async () => {
-    setAiLoading(true);
-    setAiError(null);
-    try {
-      const res = await fetch("/api/ai-description", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: formData.title, description: formData.description })
-      });
-      if (!res.ok) throw new Error("Failed to get AI description");
-      const data = await res.json();
-      if (data.description) {
-        onFormDataChange("description", data.description);
-      } else {
-        throw new Error("No description returned");
-      }
-    } catch (err: any) {
-      setAiError(err.message || "AI request failed");
-    } finally {
-      setAiLoading(false);
-    }
-  };
-
   return (
     <div className="w-full bg-white rounded-lg p-6">
       <div className="space-y-6">
@@ -484,4 +483,4 @@ export default function ActivityPanel({
       </div>
     </div>
   );
-} 
+}

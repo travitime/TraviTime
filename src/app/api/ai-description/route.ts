@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     const aiDescription = data?.content?.[0]?.text || 'No description generated.';
 
     return NextResponse.json({ description: aiDescription });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to generate description' }, { status: 500 });
   }
-} 
+}

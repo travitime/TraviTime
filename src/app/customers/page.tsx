@@ -33,7 +33,7 @@ export default function CustomerPage() {
             <span className="text-2xl mr-4">🎉</span>
             <div>
               <div className="font-medium text-gray-800 mb-1">You are on a roll!</div>
-              <div className="text-gray-700 text-sm">Let's send this customer a quote they cannot refuse!</div>
+              <div className="text-gray-700 text-sm">Let&apos;s send this customer a quote they cannot refuse!</div>
             </div>
           </div>
           <Button className="bg-yellow-400 text-gray-900 font-semibold hover:bg-yellow-300">Create Quote</Button>
@@ -74,4 +74,4 @@ export default function CustomerPage() {
       </div>
     </FullWidthLayout>
   );
-} 
+}

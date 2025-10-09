@@ -9,7 +9,7 @@ import type { QuoteFormData } from '../create/page'
 
 interface QuoteFormProps {
   formData: QuoteFormData
-  updateFormData: (section: keyof QuoteFormData, data: any) => void
+  updateFormData: (section: keyof QuoteFormData, data: QuoteFormData[keyof QuoteFormData]) => void
   currentSection: string
 }
 
@@ -37,4 +37,4 @@ export function QuoteForm({ formData, updateFormData, currentSection }: QuoteFor
       </div>
     </div>
   )
-} 
+}
