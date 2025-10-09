@@ -11,10 +11,11 @@ export default function DashboardPage() {
     <div className='w-full "'>
       <CreateHeader
         title="5 Itineraries"
+        
         primaryAction={{
           label: "Create",
           onClick: () => {
-            router.push("/itinerary/step1");
+            router.push("/itinerary/create");
           },
         }}
       />

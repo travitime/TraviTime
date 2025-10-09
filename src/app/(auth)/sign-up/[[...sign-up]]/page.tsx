@@ -1,8 +1,6 @@
 "use client";
-// import { SignUp } from "@clerk/nextjs";
 import SignUpForm from "./_components/SignUpForm";
 
-// import Image from "next/image";
 import SignUpIntro from "./_components/SignUpIntro";
 export default function SignInPage() {
   return (
@@ -14,8 +12,8 @@ export default function SignInPage() {
       <div className="grid grid-cols-12 gap-x-12 m-20">
         <div className="col-span-5 space-y-8">
           <div className="rounded-md w-full bg-white p-8">
-            <SignUpForm />
             {/* <SignUp /> */}
+            <SignUpForm />
           </div>
         </div>
         <div className="col-span-7 ">

@@ -1,205 +1,142 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { useForm } from "react-hook-form";
 
-const timeSlots: string[] = [
-  "08:00",
-  "09:00",
-  "10:00",
-  "11:00",
-  "12:00",
-  "13:00",
-  "14:00",
-  "15:00",
-  "16:00",
-  "17:00",
-  "18:00",
-  "19:00",
-  "20:00",
-  "21:00",
-  "22:00",
-  "23:00",
-  "24:00",
-];
-const days: string[] = Array.from({ length: 5 }, (_, i) => `Day ${i + 1}`);
-const activityTypes: string[] = [
-  "Flight",
-  "Hotel Check-in",
-  "Local Transport",
-  "Sightseeing",
-  "Dining",
-  "Leisure",
-  "Other",
-];
+const TIME_BLOCKS = ["Morning", "Noon", "Evening"];
 
-type ItineraryData = {
+interface Activity {
+  id: string;
   title: string;
-  fromTime: string;
-  toTime: string;
-  activityType: string;
-  notes?: string;
-};
+  description: string;
+  notes: string;
+  photos: string[];
+}
 
-type SelectedCell = {
-  day: string;
-  fromTime: string;
-} | null;
+interface Day {
+  id: number;
+  blocks: Activity[][]; // Array of arrays - each time block can have multiple activities
+}
 
-export default function ItineraryBuilder() {
-  const [selectedCell, setSelectedCell] = useState<SelectedCell>(null);
-  const [itinerary, setItinerary] = useState<Record<string, ItineraryData>>({});
-  const { register, handleSubmit, reset, setValue } = useForm<ItineraryData>();
+interface ItineraryBuilderProps {
+  days: Day[];
+  selectedCell: { dayIdx: number; blockIdx: number } | null;
+  onCellClick: (dayIdx: number, blockIdx: number) => void;
+  onAddDay: () => void;
+  onActivityDragStart: (
+    e: React.DragEvent,
+    dayIdx: number,
+    blockIdx: number,
+    activityIdx: number
+  ) => void;
+  onCellDragOver: (e: React.DragEvent) => void;
+  onCellDrop: (
+    e: React.DragEvent,
+    dayIdx: number,
+    blockIdx: number
+  ) => void;
+  onActivityDragEnd: () => void;
+  draggedActivityInfo: {
+    dayIdx: number;
+    blockIdx: number;
+    activityIdx: number;
+  } | null;
+}
 
-  const openModal = (day: string, time: string) => {
-    const existingEntry = Object.entries(itinerary).find(([key]) =>
-      key.startsWith(`${day}-${time}`)
-    );
-    if (existingEntry) {
-      const [_, data] = existingEntry;
-
-      console.log(_, data);
-      setValue("title", data.title);
-      setValue("fromTime", data.fromTime);
-      setValue("toTime", data.toTime);
-      setValue("activityType", data.activityType);
-      setValue("notes", data.notes || "");
-    } else {
-      reset({ fromTime: time });
-    }
-    setSelectedCell({ day, fromTime: time });
-  };
-
-  const onSubmit = (data: ItineraryData) => {
-    if (!selectedCell) return;
-    setItinerary((prev) => ({
-      ...prev,
-      [`${selectedCell.day}-${data.fromTime}-${data.toTime}`]: data,
-    }));
-    setSelectedCell(null);
-    reset();
-  };
-
-  const deleteActivity = () => {
-    if (!selectedCell) return;
-    setItinerary((prev) => {
-      const updated = { ...prev };
-      Object.keys(updated).forEach((key) => {
-        if (key.startsWith(`${selectedCell.day}-${selectedCell.fromTime}`)) {
-          delete updated[key];
-        }
-      });
-      return updated;
-    });
-    setSelectedCell(null);
-    reset();
-  };
-
+export default function ItineraryBuilder({ 
+  days, 
+  selectedCell, 
+  onCellClick, 
+  onAddDay,
+  onActivityDragStart,
+  onCellDragOver,
+  onCellDrop,
+  onActivityDragEnd,
+  draggedActivityInfo
+}: ItineraryBuilderProps) {
   return (
-    <div className="p-4 bg-white ">
-      <h1>Itinerary Builder</h1>
-      <table className="mt-4 w-full border border-collapse text-sm shadow-lg rounded-md overflow-hidden">
+    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <table className="w-full border-collapse text-sm">
         <thead>
-          <tr className="bg-gray-200 text-left">
-            <th className="border p-3">Day</th>
-            {/* <th className="border p-3">Places to Visit</th> */}
-            {timeSlots.map((time) => (
-              <th key={time} className="border p-3">
-                {time}
+          <tr className="bg-gray-50 text-left">
+            <th className="border-b border-gray-200 p-4 font-medium">&nbsp;</th>
+            {TIME_BLOCKS.map((block) => (
+              <th key={block} className="border-b border-gray-200 p-4 font-medium text-center">
+                {block}
               </th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {days.map((day) => (
-            <tr key={day} className="even:bg-gray-50">
-              <td className="border p-3 font-bold bg-gray-100">{day}</td>
-              {/* <td className="border p-3">
-                <Input
-                  value={places[day] || ""}
-                  onChange={(e) =>
-                    setPlaces({ ...places, [day]: e.target.value })
-                  }
-                  placeholder="Enter places to visit"
-                />
-              </td> */}
-              {timeSlots.map((time) => {
-                const entry = Object.entries(itinerary).find(([key]) => {
-                  const [entryDay, from, to] = key.split("-");
-                  return entryDay === day && time >= from && time < to;
-                });
-
-                if (entry) {
-                  const [_, { title, fromTime, toTime }] = entry;
-                  console.log(_, title, fromTime, toTime);
-                  if (time === fromTime) {
-                    const colSpan =
-                      timeSlots.indexOf(toTime) - timeSlots.indexOf(fromTime);
-                    return (
-                      <td
-                        key={time}
-                        className="border p-3 bg-blue-200 text-center cursor-pointer"
-                        colSpan={colSpan > 0 ? colSpan : 1}
-                        onClick={() => openModal(day, fromTime)}
-                      >
-                        {title}
-                      </td>
-                    );
-                  }
-                  return null;
-                }
+          {days.map((day, dayIdx) => (
+            <tr key={day.id}>
+              <td className="border-b border-gray-200 p-4 font-semibold text-center bg-gray-50">
+                Day {day.id}
+              </td>
+              {TIME_BLOCKS.map((block, blockIdx) => {
+                const isSelected = selectedCell?.dayIdx === dayIdx && selectedCell?.blockIdx === blockIdx;
+                const activities = day.blocks[blockIdx];
+                const isDropTarget =
+                  draggedActivityInfo &&
+                  (draggedActivityInfo.dayIdx !== dayIdx || draggedActivityInfo.blockIdx !== blockIdx);
                 return (
                   <td
-                    key={time}
-                    className="border p-3 cursor-pointer hover:bg-gray-100"
-                    onClick={() => openModal(day, time)}
-                  ></td>
+                    key={block}
+                    className={`border-b border-gray-200 p-4 cursor-pointer transition-colors min-w-[180px] min-h-[120px] align-top ${
+                      isSelected 
+                        ? 'bg-blue-100 border-blue-300' 
+                        : isDropTarget
+                          ? 'bg-green-100 border-green-300'
+                          : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => onCellClick(dayIdx, blockIdx)}
+                    onDragOver={onCellDragOver}
+                    onDrop={e => onCellDrop(e, dayIdx, blockIdx)}
+                  >
+                    <div className="space-y-2">
+                      {activities.length > 0 ? (
+                        activities.map((activity, activityIdx) => (
+                          <div 
+                            key={activity.id}
+                            className="p-2 bg-white rounded border border-gray-100 shadow-sm"
+                            draggable
+                            onDragStart={e => onActivityDragStart(e, dayIdx, blockIdx, activityIdx)}
+                            onDragEnd={onActivityDragEnd}
+                          >
+                            <div className="font-medium text-gray-900 text-xs truncate">
+                              {activity.title || `Activity ${activityIdx + 1}`}
+                            </div>
+                            {activity.description && (
+                              <div className="text-xs text-gray-500 mt-1 truncate">
+                                {activity.description}
+                              </div>
+                            )}
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center py-4">
+                          <span className="text-gray-400 text-sm">Click to add activity</span>
+                        </div>
+                      )}
+                      {activities.length > 0 && (
+                        <div className="text-xs text-gray-400 text-center pt-1">
+                          +{activities.length} activit{activities.length === 1 ? 'y' : 'ies'}
+                        </div>
+                      )}
+                    </div>
+                  </td>
                 );
               })}
             </tr>
           ))}
         </tbody>
       </table>
-
-      <Dialog
-        open={!!selectedCell}
-        onOpenChange={(open) => !open && setSelectedCell(null)}
-      >
-        <DialogContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <Input {...register("title")} placeholder="Title" required />
-            <Input
-              {...register("fromTime")}
-              defaultValue={selectedCell?.fromTime}
-              readOnly
-            />
-            <Input {...register("toTime")} placeholder="To Time" required />
-            <Select {...register("activityType")} required>
-              {activityTypes.map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
-            </Select>
-            <Textarea {...register("notes")} placeholder="Notes" />
-            <div className="flex justify-between">
-              <Button
-                type="button"
-                variant="destructive"
-                onClick={deleteActivity}
-              >
-                Delete
-              </Button>
-              <Button type="submit">Save</Button>
-            </div>
-          </form>
-        </DialogContent>
-      </Dialog>
+      
+      <div className=" flex justify-end p-2">
+        <Button type="button" variant="outline" onClick={onAddDay}>
+          Add day
+        </Button>
+      </div>
     </div>
   );
 }

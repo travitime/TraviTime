@@ -6,9 +6,9 @@ import { cn } from "@/lib/utils"; // Utility function for class merging (optiona
 
 const navItems = [
   { name: "Dashboard", href: "/dashboard" },
-  { name: "Customers", href: "/Customers" },
+  { name: "Customers", href: "/customers" },
   { name: "Itineraries", href: "/itinerary/list" },
-  { name: "Quotes", href: "/Quotes" },
+  { name: "Quotes", href: "/quotes" },
   { name: "Payments", href: "/Payments" },
   { name: "Documents", href: "/Documents" },
   { name: "Communication hub", href: "/Communication_hub" },

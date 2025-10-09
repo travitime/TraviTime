@@ -1,34 +1,18 @@
+'use client';
 import React from "react";
 import Card from "../Card";
-const tasks = [
-  {
-    text: "Share tickets with Juliana Spears",
-    time: "Sep 13, 8:30 AM",
-    completed: true,
-  },
-  {
-    text: "Send Quote with Karthik Arumigam",
-    time: "Sep 13, 8:30 AM",
-    completed: true,
-  },
-  {
-    text: "Create a quote for prospect Jasmine Flinch",
-    time: "Sep 13, 8:30 AM",
-    completed: false,
-  },
-  {
-    text: "Give more Hotel options to Jasmine Flinch",
-    time: "Sep 13, 8:30 AM",
-    completed: false,
-  },
-  {
-    text: "Get approval for 10% discount for Jasmine Flinch",
-    time: "Sep 13, 8:30 AM",
-    completed: false,
-  },
-];
 
-export default function TodoList() {
+export interface Task {
+  text: string;
+  time: string;
+  completed: boolean;
+}
+
+interface TodoListProps {
+  tasks: Task[];
+}
+
+export default function TodoList({ tasks }: TodoListProps) {
   return (
     <Card className="">
       <ul>

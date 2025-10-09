@@ -1,16 +1,18 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Card from "../../../dashboard/_components/Card";
+import { TanStackTable } from "@/components/ui/table";
+import { Cell } from "@tanstack/react-table";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+interface ItineraryData {
+  group: string;
+  destinations: string;
+  date: string;
+  budget: string;
+  status: string;
+}
+
 export default function TableItineraryList() {
-  const trips = [
+  const data = [
     {
       group: "Maris lego",
       destinations: "Madrid, Barcelona...",
@@ -48,45 +50,40 @@ export default function TableItineraryList() {
     },
   ];
 
-  // const statusStyles = {
-  //   Planning: "bg-yellow-100 text-yellow-700",
-  //   Completed: "bg-green-100 text-green-700",
-  //   Cancelled: "bg-red-100 text-red-700",
-  //   Scheduled: "bg-purple-100 text-purple-700",
-  // };
+  const columns = useMemo(
+    () => [
+      {
+        header: "Group Name",
+        accessorKey: "group",
+      },
+      {
+        header: "Destinations",
+        accessorKey: "destinations",
+      },
+      {
+        header: "Trip Start Date",
+        accessorKey: "date",
+      },
+      {
+        header: "Budget",
+        accessorKey: "budget",
+      },
+      {
+        header: "Status",
+        accessorKey: "status",
+        cell: ({ cell }: { cell: Cell<ItineraryData, unknown> }) => (
+          <span className="px-3 py-1 rounded-full text-sm font-medium">
+            {String(cell.getValue())}
+          </span>
+        ),
+      },
+    ],
+    []
+  );
+
   return (
     <Card className="px-4">
-      <Table>
-        <TableHeader>
-          <TableRow className="bg-gray-100">
-            <TableHead>Group Name</TableHead>
-            <TableHead>Destinations</TableHead>
-            <TableHead>Trip Start Date</TableHead>
-            <TableHead>Budget</TableHead>
-            <TableHead>Status</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {trips.map((trip, index) => (
-            <TableRow key={index} className="border-b">
-              <TableCell>{trip.group}</TableCell>
-              <TableCell>{trip.destinations}</TableCell>
-              <TableCell>{trip.date}</TableCell>
-              <TableCell>{trip.budget}</TableCell>
-              <TableCell>
-                <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    // statusStyles[trip.status]
-                    "s"
-                  }`}
-                >
-                  {trip.status}
-                </span>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <TanStackTable columns={columns} data={data} />
     </Card>
   );
 }
