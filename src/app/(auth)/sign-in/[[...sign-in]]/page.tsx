@@ -2,6 +2,7 @@
 import SignInForm from "./_components/SignInForm";
 
 import SignUpIntro from "../../sign-up/[[...sign-up]]/_components/SignUpIntro";
+import DebugClerk from "@/components/debug-clerk";
 export default function SignInPage() {
   return (
     <div
@@ -20,6 +21,7 @@ export default function SignInPage() {
           <SignUpIntro />
         </div>
       </div>
+      <DebugClerk />
     </div>
   );
 }

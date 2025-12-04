@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSignIn, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 
@@ -11,6 +11,19 @@ export function useTWSignIn() {
   const { user } = useUser(); // Get user details from Clerk
   const router = useRouter();
   const setUser = useUserStore((state) => state.setUser);
+
+  // Effect to store user data when user becomes available
+  useEffect(() => {
+    if (user) {
+      setUser({
+        id: user.id,
+        email: user.primaryEmailAddress?.emailAddress || null,
+        firstName: user.firstName || null,
+        lastName: user.lastName || null,
+        profileImage: user.imageUrl || null,
+      });
+    }
+  }, [user, setUser]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,8 +41,9 @@ export function useTWSignIn() {
         redirectUrlComplete: "/dashboard",
       });
     } catch (err: unknown) {
+      console.error("OAuth error:", err);
       const error = err as { errors?: Array<{ message: string }> };
-      setError(error.errors?.[0]?.message || "Something went wrong.");
+      setError(error.errors?.[0]?.message || "OAuth authentication failed");
     }
   };
 
@@ -44,20 +58,18 @@ export function useTWSignIn() {
 
       if (result.status === "complete") {
         await setActive({ session: result.createdSessionId }); // Set active session
-        console.log(user);
-        setUser({
-          id: user?.id || null,
-          email: user?.primaryEmailAddress?.emailAddress || null,
-          firstName: user?.firstName || null,
-          lastName: user?.lastName || null,
-          profileImage: user?.imageUrl || null,
-        });
-        router.push("/dashboard"); // Manually redirect
+        // Wait a moment for the session to be fully established
+        setTimeout(() => {
+          router.push("/dashboard"); // Manually redirect
+        }, 100);
       } else if (result.status === "needs_first_factor") {
         setPendingVerification(true);
+      } else if (result.status === "needs_second_factor") {
+        setError("Two-factor authentication required");
       }
     } catch (err: unknown) {
       const error = err as { errors?: Array<{ message: string }> };
+      console.error("Sign in error:", err);
       setError(error.errors?.[0]?.message || "Invalid credentials");
     }
   };
@@ -73,18 +85,16 @@ export function useTWSignIn() {
 
       if (result.status === "complete") {
         await setActive({ session: result.createdSessionId }); // Set active session
-        // Store user data in Zustand store
-        setUser({
-          id: user?.id || null,
-          email: user?.primaryEmailAddress?.emailAddress || null,
-          firstName: user?.firstName || null,
-          lastName: user?.lastName || null,
-          profileImage: user?.imageUrl || null,
-        });
-        router.push("/dashboard"); // Manually redirect
+        // Wait a moment for the session to be fully established
+        setTimeout(() => {
+          router.push("/dashboard"); // Manually redirect
+        }, 100);
+      } else if (result.status === "needs_second_factor") {
+        setError("Two-factor authentication required");
       }
     } catch (err: unknown) {
       const error = err as { errors?: Array<{ message: string }> };
+      console.error("Verification error:", err);
       setError(error.errors?.[0]?.message || "Invalid verification code");
     }
   };

@@ -3,7 +3,7 @@
 import { useTWSignIn } from "../../../providers/clerk/useTWSignIn";
 import { useTWSignOut } from "../../../providers/clerk/useTWSignOut";
 import { Input } from "@/components/ui/input";
-import { Facebook, Twitter, Github } from "lucide-react";
+import { Globe, Twitter, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function CustomSignIn() {
@@ -30,7 +30,7 @@ export default function CustomSignIn() {
           className="flex-1"
           onClick={() => handleOAuthSignIn("oauth_google")}
         >
-          <Facebook className="w-5 h-5" />
+          <Globe className="w-5 h-5" />
         </Button>
         <Button variant="outline" className="flex-1">
           <Twitter className="w-5 h-5" />
@@ -49,6 +49,7 @@ export default function CustomSignIn() {
       {!pendingVerification ? (
         <form
           onSubmit={(e) => {
+            console.log("Sign in form submitted", { email, password: "***" });
             e.preventDefault();
             handleSignIn();
           }}
